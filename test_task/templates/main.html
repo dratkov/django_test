@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<title>Тестовое задание</title>
+		{% load static %}
+		{% get_static_prefix as STATIC_PREFIX %}
+		<link type="text/css" href="{{ STATIC_PREFIX }}css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+		<script type="text/javascript" src="{{ STATIC_PREFIX }}js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_PREFIX }}js/jquery-ui-1.8.23.custom.min.js"></script>
+		<link rel="stylesheet" href="{{ STATIC_PREFIX }}css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="{{ STATIC_PREFIX }}css/jquery.ui.datepicker.css" type="text/css" />
+		<script type="text/javascript" src="{{ STATIC_PREFIX }}js/core.js"></script>
+	</head>
+
+	<body>
+		<div id="test"></div>
+    		<div class="alert alert-error" style="display:none"></div>
+    		<div class="alert alert-success" style="display:none"></div>
+		<table class="table table-bordered">
+			<tr>
+				<td>
+					<table>
+						{% for m in office_models_arr %}
+						<tr><td>
+							<a href="#" onclick="getAllModelRow('{{ m.get_app_label }}','{{ m.get_class_name }}'); return false">{{ m.get_verbose_name_plural }}</a>
+						</td></tr>
+
+						{% endfor %}
+					</table>
+				</td>
+				
+				<td>	
+					<table class="table table-bordered">
+						<tr>
+							{% for field_name in fields_name %}
+								{% if forloop.counter > 1 %}
+									<th>{{ field_name.verbose_name  }}</th>	
+								{% endif %}
+							{% endfor %}
+						</tr>
+						{% for user in user_list %}
+						<tr>
+							{% for field, value in user.get_fields %}
+								{% if forloop.counter > 1 %}
+								<td><span onclick="editToggle(this)">{{ value }}</span>
+									<span style="display:none">
+										<input class="{% if "Date" in field.get_internal_type %}date_change_field{% endif %}
+										input-{% if "Char" in field.get_internal_type %}xlarge{% else %}small{% endif %}"
+										value="{{ value }}" {% if "Date" in field.get_internal_type %}maxlength="10" size="10"{% endif %} type="text"/>
+										<button class="btn" type="button" onclick="saveField(this,{{ user.id }}, '{{ user.get_app_label }}','{{ user.get_class_name }}','{{ field.name  }}'); return false">сохранить</button>
+							</span></td>
+								{% endif %}
+							{% endfor %}
+						</tr>
+						{% endfor %}
+					</table>
+				</td>
+	</body>
+
+</htmL>
