@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
-from office.models import User
+from test_task.forms import GeneralForm
 from django.db import models
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ValidationError
 from django.core import serializers
 import json
 
@@ -34,14 +34,26 @@ def save_model_field(request):
             for f in model_res._meta.fields:
                 if f.name == field_name:
                     setattr(model_res, f.name, field_value)
-                    try:
-                        model_res.full_clean()
-                    except ValidationError, e:
-                        print e.messages
-                        return HttpResponse(e.messages)
-            model_res.save()
+                    h = {}
+                    if "Char" in f.get_internal_type():
+                        h['char_field'] = field_value
+                    elif "Integer" in f.get_internal_type():
+                        h['integer_field'] = field_value
+                    else:
+                        h['date_field'] = field_value
+                    form = GeneralForm(h)
+                    form.is_valid()
+                    errors_messages = []
+                    print 111
+                    for k in form.errors.keys():
+                        if ('Char' in f.get_internal_type() and k == 'char_field') or ('Date' in f.get_internal_type() and k == 'date_field') or ('Integer' in f.get_internal_type() and k == 'integer_field'):
+                            for e in form.errors[k]:
+                                errors_messages.append(e)
+                    if len(errors_messages) > 0:
+                        return HttpResponse('[{"error": "1", "errors_messages": "' + errors_messages[0].encode("utf-8") + '", "field_name": "' + f.verbose_name + '"}]', mimetype="application/json")
 
-    return HttpResponse("1")
+                    model_res.save()
+                    return HttpResponse('[{"error": "0", "field_name": "' + f.verbose_name + '"}]', mimetype="application/json")
 
 
 @csrf_exempt

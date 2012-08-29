@@ -9,16 +9,18 @@
 					{id: id, project_name: project_name, model_name:
 						model_name, field_name: field_name, field_value: $(obj).prev().val()},
 				     	function(data){
-						if(parseInt(data) != 1){
-							$(".alert-error").html("<strong>Ошибка!</strong> " + data).show()	
+						dataRes = data
+						if(parseInt(dataRes[0].error) == 1){
+							$(".alert-error").html("<strong>Ошибка!</strong> " + dataRes[0].field_name + "! " +  dataRes[0].errors_messages).show()	
 							setTimeout(function(){ $(".alert-error").hide() }, 5000)
 							return;
 						}
-						$(".alert-success").html("<strong>Ура!</strong> Изменение сохранено.").show()	
+						$(".alert-success").html("<strong>Ура! </strong>" + dataRes[0].field_name + "! Изменение сохранено.").show()	
 						setTimeout(function(){ $(".alert-success").hide() }, 5000)
 						$(obj).parent().prev().html($(obj).prev().val());
 						editToggle($(obj).parent().prev())
-			       		})	
+					
+					})	
 			}
 			function getAllModelRow(project_name, model_name){
 				$.post('/request/get_all_model_row/', 
