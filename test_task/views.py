@@ -66,6 +66,8 @@ def get_all_model_row(request):
             model_res = m
     json_string = serializers.serialize("json", model_res.objects.all())
     json_data = json.loads(json_string)
+    if len(json_data) == 0:
+        json_data = [{}]
     json_data[0]['fields_name'] = []
     json_data[0]['fields_internal_type'] = []
     json_data[0]['tables_name'] = []
