@@ -20,6 +20,9 @@ class User(models.Model):
     def get_verbose_name_plural(self):
         return self._meta.verbose_name_plural
 
+    def __unicode__(self):
+        return self.name
+
     class Meta:
             verbose_name = 'Пользователь'
             verbose_name_plural = 'Пользователи'
@@ -37,6 +40,9 @@ class Room(models.Model):
 
     def get_verbose_name_plural(self):
         return self._meta.verbose_name_plural
+
+    def __unicode__(self):
+        return self.spots
 
     class Meta:
             verbose_name = 'Комната'
